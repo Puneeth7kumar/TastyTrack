@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 const NavBar = () => {
     const router = useRouter();
-    const { auth } = useSelector(store => store);
+    const { auth, cart } = useSelector(store => store);
 
     // State to handle login popup
     const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -54,18 +54,19 @@ const NavBar = () => {
                     <IconButton onClick={handleAvatarClick} sx={{ color: "blueviolet", border: "2px solid blueviolet" }}>
                         {auth.user ? (
                             <Avatar sx={{ bgcolor: "white", color: "blueviolet", border: "2px solid blueviolet" }}>
-                                {auth.user?.name[0].toUpperCase()}
+                                {auth.user?.name?.[0]?.toUpperCase() || "U"}
                             </Avatar>
                         ) : (
                             <Person />
                         )}
                     </IconButton>
 
-                    <Link href="/cart">
-                        <Badge color='secondary' badgeContent={3}>
+                    <IconButton onClick={() => router.push("/cart")}>
+                        <Badge color='secondary' badgeContent={cart?.cart?.item?.length || 0}>
+
                             <ShoppingCartIcon sx={{ fontSize: "1.5rem", color: 'white', cursor: "pointer" }} />
-                        </Badge>
-                    </Link>
+                        </Badge></IconButton>
+
                 </div>
             </div>
 

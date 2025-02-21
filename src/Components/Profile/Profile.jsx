@@ -24,14 +24,14 @@ const Profile = () => {
     const SelectedComponent = componentMap[selectedSection];
 
     return (
-        <div className="lg:flex bg-slate-300">
+        <div className="lg:flex bg-slate-900">
             {/* Sidebar Navigation */}
             <div className="lg:w-[20%] h-full lg:sticky top-0">
                 <ProfileNavigation />
             </div>
 
             {/* Main Content */}
-            <div className="lg:w-[80%] p-5 bg-slate-300 min-h-screen">
+            <div className="lg:w-[80%] p-5 bg-slate-900 min-h-screen">
                 {SelectedComponent ? <SelectedComponent key={selectedSection} /> : <p>Component not found</p>}
             </div>
         </div>

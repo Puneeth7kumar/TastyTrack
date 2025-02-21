@@ -14,8 +14,9 @@ const RegisterForm = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     const handleSubmit = (values) => {
+        console.log("form value", values)
+        dispatch(registerUser({ userData: values, navigate: (path) => router.push(path) }));
 
-        dispatch(registerUser({ userData: values, navigate:router.push }))
     }
     const handleLogin = () => {
         router.push("/?auth=login")
@@ -25,11 +26,20 @@ const RegisterForm = () => {
             <Typography variant='h5' className='text-center'>
                 Register
             </Typography>
-            <Formik onSubmit={handleSubmit} initialValues={initialValue}>
+            <Formik onSubmit={handleSubmit} initialValues={initialValue}
+
+                validate={(values) => {
+                    const errors = {};
+                    if (!values.name) errors.name = "Name is required";
+                    if (!values.email) errors.email = "Email is required";
+                    if (!values.password) errors.password = "Password is required";
+                    if (!values.role) errors.role = "Role is required";
+                    return errors;
+                }}>
                 <Form>
                     <Field
                         as={TextField}
-                        name="fullName"
+                        name="name"
                         label="FullName"
                         fullWidth
                         variant="outlined"

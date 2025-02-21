@@ -1,34 +1,57 @@
-import { Card, Chip, IconButton } from '@mui/material'
-import React from 'react'
+import { Card, Chip, IconButton } from '@mui/material';
+import React from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToFavoriteUser } from '../State/Authentication/Action';
+import { isPresentInFavorites } from '../config/logic';
 
-const RestaurantCard = () => {
+const RestaurantCard = ({ item }) => {
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const { auth } = useSelector(store => store);
+    const jwt = localStorage.getItem("jwt");
+
+    const handleAddToFavorite = () => {
+        dispatch(addToFavoriteUser({ restaurantId: item.id, jwt }));
+    };
+
+    const handlenavigateToRestuarant = () => {
+        if (item.open) {
+            const city = encodeURIComponent(item.address.city);
+            const name = encodeURIComponent(item.name);
+            const id = item.id;
+
+            router.push(`/restaurant-details?city=${city}&name=${name}&id=${id}`);
+        }
+    };
+
     return (
-        <Card className=' w-[18rem]'>
+        <Card className="w-[18rem]">
             <div className={`${true ? 'cursor-pointer' : "cursor-not-allowed"} relative`}>
-                <img className='w-full h-[10rem] rounded-t-md object-cover'
-                    src="https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg?auto=compress&cs=tinysrgb&w=600" alt="RImage" />
+                <img className="w-full h-[10rem] rounded-t-md object-cover"
+                    src={item.images[0]} alt="Restaurant Image" />
                 <Chip
                     size="small"
                     className="absolute top-2 left-2"
-                    color={true ? "success" : "error"}
-                    label={true ? "open" : "closed"}
+                    color={item.open ? "success" : "error"}
+                    label={item.open ? "open" : "closed"}
                 />
             </div>
             <div className="p-4 textPart lg:flex w-full justify-between">
                 <div className="space-y-1">
-                    <p className='font-semibold text-lg'>Indian Fast Food</p>
-                    <p className='text-gray-500 text-sm'>Craving it all? Dive into our global fla...</p>
+                    <p onClick={handlenavigateToRestuarant} className="font-semibold text-lg cursor-pointer">{item.name}</p>
+                    <p className="text-gray-500 text-sm">{item.description}</p>
                 </div>
                 <div>
-                    <IconButton>
-                        {true ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                    <IconButton onClick={handleAddToFavorite}>
+                        {isPresentInFavorites(auth.favorites, item) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                     </IconButton>
                 </div>
             </div>
         </Card>
-    )
-}
+    );
+};
 
-export default RestaurantCard
+export default RestaurantCard;
