@@ -1,3 +1,4 @@
+import { api } from "@/Components/config/api";
 import { CREATE_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_USER_ORDERS_FAILURE, GET_USER_ORDERS_REQUEST, GET_USER_ORDERS_SUCCESS } from "./ActionType"
 
 export const createOrder = (reqData) => {
@@ -24,7 +25,7 @@ export const getUserOrders = (jwt) => {
     return async (dispatch) => {
         dispatch({ type: GET_USER_ORDERS_REQUEST })
         try {
-            const { data } = await api.post(`/api/order/user`,  {
+            const { data } = await api.get(`/api/order/user`, {
                 headers: {
                     Authorization: `Bearer ${jwt}`,
                 }

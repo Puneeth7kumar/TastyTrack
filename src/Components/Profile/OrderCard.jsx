@@ -1,7 +1,8 @@
 import { Button, Card } from '@mui/material';
 import React from 'react';
 
-export const OrderCard = () => {
+export const OrderCard = ({ item }) => {
+    console.log("order card item", item)
     return (
         <Card
             className="flex justify-between items-center p-5"
@@ -19,12 +20,12 @@ export const OrderCard = () => {
             <div className="flex items-center space-x-5">
                 <img
                     className="h-16 w-16 object-cover rounded-full"
-                    src="https://images.pexels.com/photos/718742/pexels-photo-718742.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    src={item?.food?.images[0]}
                     alt="Biryani"
                 />
                 <div>
-                    <p className="text-lg font-semibold text-gray-800">Biryani</p>
-                    <p className="text-gray-600">₹120</p>
+                    <p className="text-lg font-semibold text-gray-800">{item?.food?.name}</p>
+                    <p className="text-gray-600">₹{item?.totalPrice}</p>
                 </div>
             </div>
             <div>
@@ -43,7 +44,7 @@ export const OrderCard = () => {
                         },
                     }}
                 >
-                    Completed
+                    {item.orderStatus}
                 </Button>
             </div>
         </Card>

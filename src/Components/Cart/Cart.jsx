@@ -8,6 +8,7 @@ import { AddLocation } from '@mui/icons-material';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { findCart } from '../State/Cart/Action';
+import { createOrder } from '../State/Order/Action';
 
 export const style = {
     position: 'absolute',
@@ -23,8 +24,9 @@ export const style = {
 const initialValues = {
     streetAddress: "",
     state: "",
-    pincode: "",
-    city: ""
+    postalCode: "",
+    city: "",
+    country: ""
 }
 // const validationSchema = Yup.object.shape({
 //     streetAddress: Yup.string().required("Street address is required"),
@@ -32,7 +34,7 @@ const initialValues = {
 //     pincode: Yup.required("Pincode is required"),
 //     city: Yup.string().required("City is required")
 // })
-const items = [1, 1]
+
 const Cart = () => {
     const createOrderUsingSelectedAddress = () => {
 
@@ -40,7 +42,7 @@ const Cart = () => {
     const dispatch = useDispatch()
     const handleOpenAddressModel = () => setOpen(true)
     const [open, setOpen] = React.useState(false);
-    const { cart } = useSelector(store => store)
+    const { auth, cart } = useSelector(store => store)
     const jwt = localStorage.getItem("jwt")
     useEffect(() => {
         if (jwt) {
@@ -49,6 +51,34 @@ const Cart = () => {
     }, [dispatch, jwt]);
     const handleClose = () => setOpen(false);
     const handleSubmit = (value) => {
+        console.log("Cart Data:", cart);
+        console.log("First Cart Item:", cart.cart?.item[0]);
+        if (!cart.cart?.item || cart.cart?.item.length === 0) {
+            console.error("Cart is empty. Cannot proceed with order.");
+            return;
+        }
+
+        const firstCartItem = cart.cart?.item[0];
+
+        if (!firstCartItem.food || !firstCartItem.food.restaurant) {
+            console.error("Cart item structure is incorrect.");
+            return;
+        }
+        const data = {
+            jwt: localStorage.getItem("jwt"),
+            order: {
+                restaurantId: cart.cart?.item[0].food?.restaurant.id,
+                deliveryAddress: {
+                    name: auth.user?.name,
+                    streetAddress: value.streetAddress,
+                    city: value.city,
+                    state: value.state,
+                    postalCode: value.pincode,
+                    country: "India"
+                }
+            }
+        }
+        dispatch(createOrder(data))
         console.log("Form value", value)
     }
 
